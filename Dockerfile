@@ -1,15 +1,15 @@
 FROM abiosoft/caddy:no-stats
+MAINTAINER dehaeze.thomas@gmail.com
 
-ARG HUGO_VERSION=0.80.0
-ARG GLIBC_VERSION=2.23-r3
+ENV HUGO_VERSION 0.80.0
+ENV HUGO_BINARY hugo_extended_${HUGO_VERSION}_Linux-64bit.tar.gz
+ENV GLIBC_VERSION 2.27-r0
 
-# Install dependencies
+RUN apk add --update openssh-client git tar wget ca-certificates libstdc++
 
-RUN apk add --no-cache --upgrade openssh-client git tar curl wget ca-certificates libstdc++
+# Install glibc: This is required for HUGO-extended (including SASS) to work.
 
-# Install glibc
-
-RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub \
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
   &&  wget "https://github.com/sgerrand/alpine-pkg-glibc/releases/download/$GLIBC_VERSION/glibc-$GLIBC_VERSION.apk" \
   &&  apk --no-cache add "glibc-$GLIBC_VERSION.apk" \
   &&  rm "glibc-$GLIBC_VERSION.apk" \
@@ -22,14 +22,12 @@ RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/
 
 # Install HUGO
 
-RUN curl --silent --show-error --fail --location \
-  --header "Accept: application/tar+gzip, application/x-gzip, application/octet-stream" -o - \
-  "https://github.com/spf13/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_Linux-64bit.tar.gz" \
-  | tar --no-same-owner -C /tmp -xz \
-  && mv /tmp/hugo /usr/bin/hugo \
-  && chmod 0755 /usr/bin/hugo \
+RUN wget https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${HUGO_BINARY} \
+  && tar xzf ${HUGO_BINARY} \
+  && rm -r ${HUGO_BINARY} \
+  && mv hugo /usr/bin \
   && git config --global fetch.recurseSubmodules true \
-  && apk del curl tar wget ca-certificates \
+  && apk del wget ca-certificates \
   && mkdir -p /www/public
 
 WORKDIR /www
