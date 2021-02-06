@@ -7,7 +7,7 @@
         path ../src
         hook /webhook
         args --recurse-submodules
-        then git submodule update --remote --recursive; hugo --destination=/www/public
+        then git submodule update --remote && hugo --destination=/www/public
     }
 
     # write log to stdout for docker
