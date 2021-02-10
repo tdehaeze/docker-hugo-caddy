@@ -1,4 +1,4 @@
-FROM abiosoft/caddy:no-stats
+FROM abiosoft/caddy:1.0.3-no-stats
 MAINTAINER dehaeze.thomas@gmail.com
 
 ENV HUGO_VERSION 0.80.0
