@@ -1,7 +1,7 @@
 FROM abiosoft/caddy:1.0.3-no-stats
 MAINTAINER dehaeze.thomas@gmail.com
 
-ENV HUGO_VERSION 0.80.0
+ENV HUGO_VERSION 0.83.0
 ENV HUGO_BINARY hugo_extended_${HUGO_VERSION}_Linux-64bit.tar.gz
 ENV GLIBC_VERSION 2.27-r0
 
